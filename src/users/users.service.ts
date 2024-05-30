@@ -57,17 +57,19 @@ export class UsersService {
       user.createdBy = user.id;
       user.updatedBy = user.id;
       user.role = adminRole;
+      user.emailConfimated = true;
       await this.userRepository.save(user);
       delete user.password;
-      const verifyEmail = await this.authService.sendEmailVerification(
-        user.email,
-        user,
-      );
 
-      if (verifyEmail.data != undefined) {
-        user.emailConfimated = true;
-        await this.userRepository.save(user);
-      }
+      // const verifyEmail = await this.authService.sendEmailVerification(
+      //   user.email,
+      //   user,
+      // );
+
+      // if (verifyEmail.data != undefined) {
+      //   user.emailConfimated = true;
+      //   await this.userRepository.save(user);
+      // }
 
       return { data: user, statusCode: 200 };
     } catch (error) {
