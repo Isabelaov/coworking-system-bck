@@ -28,9 +28,11 @@ export class UsersService {
 
   async create(createUserDto: CreateUserDto): Promise<ApiResponse<any>> {
     try {
-      const findUser = await this.findByUsernameOrEmail(
-        createUserDto.username.toLowerCase(),
-      );
+      const findUser =
+        (await this.findByUsernameOrEmail(createUserDto.email.toLowerCase())) ||
+        (await this.findByUsernameOrEmail(
+          createUserDto.username.toLowerCase(),
+        ));
 
       if (findUser.data != undefined) {
         const err = new ConflictException('User duplicated');
