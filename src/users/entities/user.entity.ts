@@ -24,14 +24,14 @@ export class User {
   @Column('varchar', { length: 105, select: false, nullable: false })
   password: string;
 
-  @Column('varchar', { length: 20, nullable: false })
-  phone: string;
+  @Column('varchar', { length: 20, nullable: true })
+  phone?: string;
 
-  @Column('date', { nullable: false })
-  birthDate: Date;
+  @Column('date', { nullable: true })
+  birthDate?: Date;
 
-  @Column('varchar')
-  gender: string;
+  @Column('varchar', { nullable: true })
+  gender?: string;
 
   @Column('boolean', { default: false, nullable: false })
   emailConfimated: boolean;
