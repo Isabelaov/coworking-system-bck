@@ -63,6 +63,9 @@ export class User {
   checkFieldsBefore() {
     this.email = this.email.toLowerCase().trim();
     this.username = this.username.toLowerCase().trim();
-    this.gender = this.gender.toLowerCase().trim();
+
+    if (this.gender) {
+      this.gender = this.gender.toLowerCase().trim();
+    }
   }
 }
