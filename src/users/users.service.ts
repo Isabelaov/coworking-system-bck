@@ -74,7 +74,9 @@ export class UsersService {
       return { data: user, statusCode: 200 };
     } catch (error) {
       this.logger.error(`Failed to create user: ${error.message}`);
-      const err = new BadRequestException('Failed to create user');
+      const err = new BadRequestException(
+        `Failed to create user: ${error.message}`,
+      );
 
       return { error: err.getResponse()['message'], statusCode: 400 };
     }
