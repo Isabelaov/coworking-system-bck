@@ -51,6 +51,8 @@ export class AuthService {
       };
     }
 
+    console.log(user.emailConfimated);
+
     if (!user.emailConfimated) {
       err = new UnauthorizedException('Email is not confirmated');
       this.logger.error(`Login failed: ${err.message}`);

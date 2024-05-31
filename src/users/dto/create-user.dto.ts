@@ -1,6 +1,7 @@
 import {
   IsDate,
   IsEmail,
+  IsOptional,
   IsString,
   Matches,
   MaxLength,
@@ -25,15 +26,18 @@ export class CreateUserDto {
   })
   password: string;
 
+  @IsOptional()
   @IsString()
   @Matches(/^\+[1-9]\d{1,14}$/, {
     message: 'Phone number must be in E.164 format',
   })
   phone: string;
 
+  @IsOptional()
   @IsDate()
   birthDate: Date;
 
+  @IsOptional()
   @IsString()
   @MinLength(5)
   @MaxLength(20)
