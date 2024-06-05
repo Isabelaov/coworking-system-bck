@@ -7,6 +7,8 @@ import { EnvConfig } from './common/config/env.config';
 import { JoiValidationSchema } from './common/config/joi.validation';
 import { UsersModule } from './modules/users.module';
 import { RolesModule } from './modules/roles.module';
+import { HeadquartersModule } from './headquarters/headquarters.module';
+import { SpacesModule } from './spaces/spaces.module';
 
 @Module({
   imports: [
@@ -31,6 +33,8 @@ import { RolesModule } from './modules/roles.module';
     UsersModule,
     AuthModule,
     RolesModule,
+    HeadquartersModule,
+    SpacesModule,
   ],
   controllers: [AppController],
   providers: [],
