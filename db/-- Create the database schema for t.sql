@@ -39,6 +39,13 @@ CREATE TABLE public.clients (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     phone VARCHAR(20),
+    id_type VARCHAR(50) NOT NULL,
+    identification VARCHAR(250) NOT NULL,
+    user_email VARCHAR(250) NOT NULL,
+    birth_date DATE NOT NULL,
+    gender VARCHAR(50),
+    company_name VARCHAR(250),
+    company_email VARCHAR(250),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP AT TIME ZONE 'GMT-5',
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP AT TIME ZONE 'GMT-5',
     created_by INT REFERENCES public.users(id),
@@ -56,6 +63,14 @@ CREATE TABLE public.headquarters (
     created_by INT REFERENCES public.users(id),
     updated_by INT REFERENCES public.users(id)
 );
+
+-- Crear la tabla users_headquarters
+
+CREATE TABLE public.users_headquarters(
+    user_id INT REFERENCES users(id),
+    headquarter_id INT REFERENCES headquarters(id)
+    PRIMARY KEY (user_id, headquarter_id)
+)
 
 -- Crear la tabla SPACES
 CREATE TABLE public.spaces (
@@ -79,6 +94,12 @@ CREATE TABLE public.accessories (
     created_by INT REFERENCES public.users(id),
     updated_by INT REFERENCES public.users(id)
 );
+
+CREATE TABLE public.spaces_accessories(
+    space_id INT REFERENCES spaces(id),
+    accessories_id INT REFERENCES accessories(id),
+    PRIMARY KEY(space_id, accessories_id)
+)
 
 -- Crear la tabla PLANS
 CREATE TABLE public.plans (
