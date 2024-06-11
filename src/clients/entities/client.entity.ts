@@ -4,29 +4,38 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn,
-  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Role } from '../../roles/entities/role.entity';
 
-@Entity('users')
-export class User {
+@Entity('clients')
+export class Client {
   @PrimaryGeneratedColumn('increment')
   id: number;
 
-  @Column('varchar', { unique: true, length: 150, nullable: false })
-  username: string;
+  @Column('varchar', { nullable: false, length: 100 })
+  name: string;
 
-  @Column('varchar', { unique: true, length: 150, nullable: false })
+  @Column('varchar', { nullable: false, length: 20 })
+  phone?: string;
+
+  @Column('varchar', { nullable: false, length: 50 })
+  idType: string;
+
+  @Column('varchar', { nullable: false, length: 250 })
+  identification: string;
+
+  @Column('varchar', { nullable: false, length: 100 })
   email: string;
 
   @Column('varchar', { length: 105, select: false, nullable: false })
   password: string;
 
-  @Column('varchar', { length: 20, nullable: true })
-  phone?: string;
+  @Column('date', { nullable: true })
+  birthDate?: Date;
+
+  @Column('varchar', { nullable: true })
+  gender?: string;
 
   @Column('boolean', { default: true, nullable: false })
   emailConfirmed: boolean;
@@ -44,22 +53,16 @@ export class User {
   })
   updatedAt: Date;
 
-  @ManyToOne(() => User, { nullable: true })
-  @JoinColumn({ name: 'createdBy' })
+  @Column('int')
   createdBy: number;
 
-  @ManyToOne(() => User, { nullable: true })
-  @JoinColumn({ name: 'updatedBy' })
+  @Column('int')
   updatedBy: number;
-
-  @ManyToOne(() => Role)
-  @JoinColumn({ name: 'roleId' })
-  roleId: number;
 
   @BeforeInsert()
   @BeforeUpdate()
   checkFieldsBefore() {
     this.email = this.email.toLowerCase().trim();
-    this.username = this.username.toLowerCase().trim();
+    this.name = this.name.toLowerCase().trim();
   }
 }

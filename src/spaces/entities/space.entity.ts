@@ -24,7 +24,7 @@ export class Space {
   isActive: boolean;
 
   @ManyToOne(() => Headquarter)
-  headquarter: Headquarter;
+  headquarter: Headquarter['id'];
 
   @CreateDateColumn({
     type: 'timestamptz',
@@ -40,8 +40,8 @@ export class Space {
   upadtedAt: Date;
 
   @ManyToOne(() => User)
-  createdBy: User;
+  createdBy: User['id'];
 
   @ManyToOne(() => User)
-  updatedBy: User;
+  updatedBy: User['id'];
 }

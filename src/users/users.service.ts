@@ -5,6 +5,7 @@ import {
   Logger,
   forwardRef,
   Inject,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -41,24 +42,36 @@ export class UsersService {
         return { error: err.getResponse()['message'], statusCode: 400 };
       }
 
-      const { password, ...userData } = createUserDto;
-      let user = this.userRepository.create({
-        ...userData,
-        password: bcrypt.hashSync(password, 10),
-        createdBy: 1,
-        updatedBy: 1,
-      });
-
       const adminRole = await this.roleRepository.findOne({
         where: { name: 'admin' },
       });
 
-      user = await this.userRepository.save(user);
-      user.createdBy = user.id;
-      user.updatedBy = user.id;
-      user.role = adminRole;
-      user.emailConfimated = true;
-      await this.userRepository.save(user);
+      const { password, userId, ...userData } = createUserDto;
+      const creator = await this.userRepository.findOne({
+        where: { id: userId },
+        select: { roleId: true },
+      });
+
+      console.log(creator.roleId);
+
+      // if (creator.roleId != adminRole.id) {
+      //   const err = new UnauthorizedException(
+      //     `User of id ${userId} is unauthorized to create a new user`,
+      //   );
+      //   this.logger.error(`Failed to create user: ${err.message}`);
+
+      //   return { error: err.getResponse()['message'], statusCode: 401 };
+      // }
+
+      const user = this.userRepository.create({
+        ...userData,
+        createdBy: creator.id,
+        updatedBy: creator.id,
+        password: bcrypt.hashSync(password, 10),
+        roleId: adminRole.id,
+      });
+
+      const savedUser = await this.userRepository.save(user);
       delete user.password;
 
       // const verifyEmail = await this.authService.sendEmailVerification(
@@ -67,11 +80,11 @@ export class UsersService {
       // );
 
       // if (verifyEmail.data != undefined) {
-      //   user.emailConfimated = true;
+      //   user.emailConfirmed = true;
       //   await this.userRepository.save(user);
       // }
 
-      return { data: user, statusCode: 200 };
+      return { data: savedUser, statusCode: 200 };
     } catch (error) {
       this.logger.error(`Failed to create user: ${error.message}`);
       const err = new BadRequestException(
@@ -94,7 +107,7 @@ export class UsersService {
           password: true,
           email: true,
           id: true,
-          emailConfimated: true,
+          emailConfirmed: true,
         },
       });
 

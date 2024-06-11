@@ -51,8 +51,8 @@ export class AuthService {
       };
     }
 
-    if (!user.emailConfimated) {
-      err = new UnauthorizedException('Email is not confirmated');
+    if (!user.emailConfirmed) {
+      err = new UnauthorizedException('Email is not confirmed');
       this.logger.error(`Login failed: ${err.message}`);
       return { error: err.getResponse()['message'], statusCode: err.status };
     }
@@ -72,9 +72,9 @@ export class AuthService {
     try {
       const { id } = (await this.verifyToken(token)).data;
 
-      this.userRepository.update(id, { emailConfimated: true });
+      this.userRepository.update(id, { emailConfirmed: true });
       return {
-        data: `User with id ${id} confimated their email successfully`,
+        data: `User with id ${id} confirmed their email successfully`,
         statusCode: 200,
       };
     } catch (error) {

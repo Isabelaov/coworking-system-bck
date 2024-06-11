@@ -9,6 +9,8 @@ import { UsersModule } from './modules/users.module';
 import { RolesModule } from './modules/roles.module';
 import { HeadquartersModule } from './modules/headquarters.module';
 import { SpacesModule } from './modules/spaces.module';
+import { ClientsModule } from './modules/clients.module';
+import { CompaniesModule } from './companies/companies.module';
 
 @Module({
   imports: [
@@ -35,6 +37,8 @@ import { SpacesModule } from './modules/spaces.module';
     RolesModule,
     HeadquartersModule,
     SpacesModule,
+    ClientsModule,
+    CompaniesModule,
   ],
   controllers: [AppController],
   providers: [],

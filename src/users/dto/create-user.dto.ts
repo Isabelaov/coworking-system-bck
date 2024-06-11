@@ -1,6 +1,6 @@
 import {
-  IsDate,
   IsEmail,
+  IsInt,
   IsOptional,
   IsString,
   Matches,
@@ -10,6 +10,8 @@ import {
 
 export class CreateUserDto {
   @IsEmail()
+  @MinLength(6)
+  @MaxLength(100)
   email: string;
 
   @IsString()
@@ -33,13 +35,6 @@ export class CreateUserDto {
   })
   phone: string;
 
-  @IsOptional()
-  @IsDate()
-  birthDate: Date;
-
-  @IsOptional()
-  @IsString()
-  @MinLength(5)
-  @MaxLength(20)
-  gender: string;
+  @IsInt()
+  userId: number;
 }

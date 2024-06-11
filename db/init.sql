@@ -1,6 +1,8 @@
 BEGIN;
 
--- Eliminar las tablas si ya existen
+DROP TABLE IF EXISTS public.users_headquarters;
+DROP TABLE IF EXISTS public.spaces_accessories;
+DROP TABLE IF EXISTS public.tokens;
 DROP TABLE IF EXISTS public.refunds;
 DROP TABLE IF EXISTS public.payments;
 DROP TABLE IF EXISTS public.reservations;
@@ -11,120 +13,160 @@ DROP TABLE IF EXISTS public.accessories;
 DROP TABLE IF EXISTS public.spaces;
 DROP TABLE IF EXISTS public.headquarters;
 DROP TABLE IF EXISTS public.clients;
+DROP TABLE IF EXISTS public.companies;
 DROP TABLE IF EXISTS public.users;
 DROP TABLE IF EXISTS public.roles;
 
--- Crear la tabla ROLES
 CREATE TABLE public.roles (
     id SERIAL PRIMARY KEY,
     name VARCHAR(50) NOT NULL
 );
 
--- Crear la tabla USERS
 CREATE TABLE public.users (
     id SERIAL PRIMARY KEY,
     username VARCHAR(100) UNIQUE NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
     phone VARCHAR(20),
     password VARCHAR(100) NOT NULL,
-    role_id INT REFERENCES public.roles(id),
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP AT TIME ZONE 'GMT-5',
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP AT TIME ZONE 'GMT-5',
+    email_confirmed BOOLEAN DEFAULT FALSE,
+    role_id INT,
+    FOREIGN KEY (role_id) REFERENCES public.roles(id),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     created_by INT,
     updated_by INT
 );
 
--- Crear la tabla CLIENTS
 CREATE TABLE public.clients (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     phone VARCHAR(20),
     id_type VARCHAR(50) NOT NULL,
     identification VARCHAR(250) NOT NULL,
-    user_email VARCHAR(250) NOT NULL,
-    birth_date DATE NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    birth_date DATE,
     gender VARCHAR(50),
-    company_name VARCHAR(250),
-    company_email VARCHAR(250),
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP AT TIME ZONE 'GMT-5',
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP AT TIME ZONE 'GMT-5',
-    created_by INT REFERENCES public.users(id),
-    updated_by INT REFERENCES public.users(id)
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    created_by INT,
+    updated_by INT
 );
 
--- Crear la tabla HEADQUARTERS
+CREATE TABLE public.companies (
+    id SERIAL PRIMARY KEY,
+    id_type VARCHAR(50) NOT NULL,
+    identification VARCHAR(250) NOT NULL,
+    company_name VARCHAR(250),
+    company_email VARCHAR(250),
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(250) NOT NULL,
+    --phone VARCHAR(20),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    created_by INT,
+    updated_by INT
+);
+
+CREATE TABLE public.tokens (
+    id SERIAL PRIMARY KEY,
+    type VARCHAR(100) NOT NULL,
+    token VARCHAR NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    firmed_by INT NOT NULL,
+    expiration_date TIMESTAMP NOT NULL
+);
+
 CREATE TABLE public.headquarters (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     address VARCHAR(200) NOT NULL,
     city VARCHAR(100) NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP AT TIME ZONE 'GMT-5',
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP AT TIME ZONE 'GMT-5',
-    created_by INT REFERENCES public.users(id),
-    updated_by INT REFERENCES public.users(id)
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    created_by INT,
+    FOREIGN KEY (created_by) REFERENCES public.users(id),
+    updated_by INT,
+    FOREIGN KEY (updated_by) REFERENCES public.users(id)
 );
 
--- Crear la tabla users_headquarters
-
 CREATE TABLE public.users_headquarters(
-    user_id INT REFERENCES users(id),
-    headquarter_id INT REFERENCES headquarters(id)
-    PRIMARY KEY (user_id, headquarter_id)
-)
+    user_id INT,
+    FOREIGN KEY (user_id) REFERENCES public.users(id),
+    headquarter_id INT,
+    FOREIGN KEY (headquarter_id) REFERENCES public.headquarters(id),
+    PRIMARY KEY (user_id, headquarter_id),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    created_by INT,
+    FOREIGN KEY (created_by) REFERENCES public.users(id),
+    updated_by INT,
+    FOREIGN KEY (updated_by) REFERENCES public.users(id)
+);
 
--- Crear la tabla SPACES
 CREATE TABLE public.spaces (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     capacity INT NOT NULL,
     headquarters_id INT REFERENCES public.headquarters(id),
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP AT TIME ZONE 'GMT-5',
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP AT TIME ZONE 'GMT-5',
-    created_by INT REFERENCES public.users(id),
-    updated_by INT REFERENCES public.users(id)
+    is_active BOOLEAN NOT NULL,
+    url VARCHAR,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    created_by INT,
+    FOREIGN KEY (created_by) REFERENCES public.users(id),
+    updated_by INT,
+    FOREIGN KEY (updated_by) REFERENCES public.users(id)
 );
 
--- Crear la tabla ACCESSORIES
 CREATE TABLE public.accessories (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     space_id INT REFERENCES public.spaces(id),
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP AT TIME ZONE 'GMT-5',
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP AT TIME ZONE 'GMT-5',
-    created_by INT REFERENCES public.users(id),
-    updated_by INT REFERENCES public.users(id)
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    created_by INT,
+    FOREIGN KEY (created_by) REFERENCES public.users(id),
+    updated_by INT,
+    FOREIGN KEY (updated_by) REFERENCES public.users(id)
 );
 
 CREATE TABLE public.spaces_accessories(
-    space_id INT REFERENCES spaces(id),
-    accessories_id INT REFERENCES accessories(id),
-    PRIMARY KEY(space_id, accessories_id)
-)
+    space_id INT REFERENCES public.spaces(id),
+    accessories_id INT REFERENCES public.accessories(id),
+    PRIMARY KEY(space_id, accessories_id),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    created_by INT,
+    FOREIGN KEY (created_by) REFERENCES public.users(id),
+    updated_by INT,
+    FOREIGN KEY (updated_by) REFERENCES public.users(id)
+);
 
--- Crear la tabla PLANS
 CREATE TABLE public.plans (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     price NUMERIC(12, 2) NOT NULL,
     duration_months INT NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP AT TIME ZONE 'GMT-5',
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP AT TIME ZONE 'GMT-5',
-    created_by INT REFERENCES public.users(id),
-    updated_by INT REFERENCES public.users(id)
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    created_by INT,
+    FOREIGN KEY (created_by) REFERENCES public.users(id),
+    updated_by INT,
+    FOREIGN KEY (updated_by) REFERENCES public.users(id)
 );
 
--- Crear la tabla ADDITIONAL_SERVICES
 CREATE TABLE public.additional_services (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     price NUMERIC(12, 2) NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP AT TIME ZONE 'GMT-5',
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP AT TIME ZONE 'GMT-5',
-    created_by INT REFERENCES public.users(id),
-    updated_by INT REFERENCES public.users(id)
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    created_by INT,
+    FOREIGN KEY (created_by) REFERENCES public.users(id),
+    updated_by INT,
+    FOREIGN KEY (updated_by) REFERENCES public.users(id)
 );
 
--- Crear la tabla TICKETS
 CREATE TABLE public.tickets (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
@@ -133,29 +175,42 @@ CREATE TABLE public.tickets (
     client_id INT REFERENCES public.clients(id),
     start_date DATE NOT NULL,
     end_date DATE NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP AT TIME ZONE 'GMT-5',
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP AT TIME ZONE 'GMT-5',
-    created_by INT REFERENCES public.users(id),
-    updated_by INT REFERENCES public.users(id)
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    created_by INT,
+    FOREIGN KEY (created_by) REFERENCES public.users(id),
+    updated_by INT,
+    FOREIGN KEY (updated_by) REFERENCES public.users(id)
 );
 
--- Crear la tabla RESERVATIONS
 CREATE TABLE public.reservations (
     id SERIAL PRIMARY KEY,
     date DATE NOT NULL,
     start_time TIME NOT NULL,
     end_time TIME NOT NULL,
-    space_id INT REFERENCES public.spaces(id),
-    client_id INT REFERENCES public.clients(id),
-    plan_id INT REFERENCES public.plans(id),
+    space_id INT,
+    FOREIGN KEY (space_id)  REFERENCES public.spaces(id),
+    client_id INT,
+    FOREIGN KEY (client_id) REFERENCES public.clients(id),
+    plan_id INT,
+    FOREIGN KEY (plan_id) REFERENCES public.plans(id),
     notes TEXT,
     internal BOOLEAN DEFAULT FALSE,
     ticket_id INT REFERENCES public.tickets(id),
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP AT TIME ZONE 'GMT-5',
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP AT TIME ZONE 'GMT-5',
-    created_by INT REFERENCES public.users(id),
-    updated_by INT REFERENCES public.users(id)
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    created_by INT,
+    FOREIGN KEY (created_by) REFERENCES public.users(id),
+    updated_by INT,
+    FOREIGN KEY (updated_by) REFERENCES public.users(id)
 );
+
+INSERT INTO public.roles (name) VALUES ('admin');
+
+INSERT INTO public.users (username, email, phone, password, role_id, email_confirmed)
+VALUES ('admin one', 'admin.one@example.com', '+1234567890', 'pAssword.123', 1, TRUE);
+
+--end
 
 -- Crear la tabla PAYMENTS
 CREATE TABLE public.payments (
@@ -168,8 +223,8 @@ CREATE TABLE public.payments (
     reservation_id INT REFERENCES public.reservations(id),
     client_id INT REFERENCES public.clients(id),
     reference VARCHAR(100) NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP AT TIME ZONE 'GMT-5',
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP AT TIME ZONE 'GMT-5',
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     created_by INT REFERENCES public.users(id),
     updated_by INT REFERENCES public.users(id)
 );
@@ -181,8 +236,8 @@ CREATE TABLE public.refunds (
     date DATE NOT NULL,
     reason TEXT NOT NULL,
     payment_id INT REFERENCES public.payments(id),
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP AT TIME ZONE 'GMT-5',
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP AT TIME ZONE 'GMT-5',
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     created_by INT REFERENCES public.users(id),
     updated_by INT REFERENCES public.users(id)
 );
