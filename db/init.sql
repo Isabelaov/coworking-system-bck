@@ -1,8 +1,11 @@
 BEGIN;
 
+<<<<<<< HEAD:db/init.sql
 DROP TABLE IF EXISTS public.users_headquarters;
 DROP TABLE IF EXISTS public.spaces_accessories;
 DROP TABLE IF EXISTS public.tokens;
+=======
+>>>>>>> f55e346a893585edbd262f5a0f3e713b442582ac:db/-- Create the database schema for t.sql
 DROP TABLE IF EXISTS public.refunds;
 DROP TABLE IF EXISTS public.payments;
 DROP TABLE IF EXISTS public.reservations;
@@ -28,9 +31,13 @@ CREATE TABLE public.users (
     email VARCHAR(100) UNIQUE NOT NULL,
     phone VARCHAR(20),
     password VARCHAR(100) NOT NULL,
+<<<<<<< HEAD:db/init.sql
     email_confirmed BOOLEAN DEFAULT FALSE,
     role_id INT,
     FOREIGN KEY (role_id) REFERENCES public.roles(id),
+=======
+    role_id INT REFERENCES public.roles(id),
+>>>>>>> f55e346a893585edbd262f5a0f3e713b442582ac:db/-- Create the database schema for t.sql
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     created_by INT,
@@ -46,6 +53,7 @@ CREATE TABLE public.clients (
     email VARCHAR(100) NOT NULL,
     birth_date DATE,
     gender VARCHAR(50),
+<<<<<<< HEAD:db/init.sql
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     created_by INT,
@@ -74,6 +82,14 @@ CREATE TABLE public.tokens (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     firmed_by INT NOT NULL,
     expiration_date TIMESTAMP NOT NULL
+=======
+    company_name VARCHAR(250),
+    company_email VARCHAR(250),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    created_by INT REFERENCES public.users(id),
+    updated_by INT REFERENCES public.users(id)
+>>>>>>> f55e346a893585edbd262f5a0f3e713b442582ac:db/-- Create the database schema for t.sql
 );
 
 CREATE TABLE public.headquarters (
@@ -83,6 +99,7 @@ CREATE TABLE public.headquarters (
     city VARCHAR(100) NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+<<<<<<< HEAD:db/init.sql
     created_by INT,
     FOREIGN KEY (created_by) REFERENCES public.users(id),
     updated_by INT,
@@ -101,6 +118,16 @@ CREATE TABLE public.users_headquarters(
     FOREIGN KEY (created_by) REFERENCES public.users(id),
     updated_by INT,
     FOREIGN KEY (updated_by) REFERENCES public.users(id)
+=======
+    created_by INT REFERENCES public.users(id),
+    updated_by INT REFERENCES public.users(id)
+);
+
+CREATE TABLE public.users_headquarters(
+    user_id INT REFERENCES public.users(id),
+    headquarter_id INT REFERENCES public.headquarters(id),
+    PRIMARY KEY (user_id, headquarter_id)
+>>>>>>> f55e346a893585edbd262f5a0f3e713b442582ac:db/-- Create the database schema for t.sql
 );
 
 CREATE TABLE public.spaces (
@@ -108,6 +135,7 @@ CREATE TABLE public.spaces (
     name VARCHAR(100) NOT NULL,
     capacity INT NOT NULL,
     headquarters_id INT REFERENCES public.headquarters(id),
+<<<<<<< HEAD:db/init.sql
     is_active BOOLEAN NOT NULL,
     url VARCHAR,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
@@ -116,6 +144,12 @@ CREATE TABLE public.spaces (
     FOREIGN KEY (created_by) REFERENCES public.users(id),
     updated_by INT,
     FOREIGN KEY (updated_by) REFERENCES public.users(id)
+=======
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    created_by INT REFERENCES public.users(id),
+    updated_by INT REFERENCES public.users(id)
+>>>>>>> f55e346a893585edbd262f5a0f3e713b442582ac:db/-- Create the database schema for t.sql
 );
 
 CREATE TABLE public.accessories (
@@ -124,15 +158,21 @@ CREATE TABLE public.accessories (
     space_id INT REFERENCES public.spaces(id),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+<<<<<<< HEAD:db/init.sql
     created_by INT,
     FOREIGN KEY (created_by) REFERENCES public.users(id),
     updated_by INT,
     FOREIGN KEY (updated_by) REFERENCES public.users(id)
+=======
+    created_by INT REFERENCES public.users(id),
+    updated_by INT REFERENCES public.users(id)
+>>>>>>> f55e346a893585edbd262f5a0f3e713b442582ac:db/-- Create the database schema for t.sql
 );
 
 CREATE TABLE public.spaces_accessories(
     space_id INT REFERENCES public.spaces(id),
     accessories_id INT REFERENCES public.accessories(id),
+<<<<<<< HEAD:db/init.sql
     PRIMARY KEY(space_id, accessories_id),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
@@ -140,6 +180,9 @@ CREATE TABLE public.spaces_accessories(
     FOREIGN KEY (created_by) REFERENCES public.users(id),
     updated_by INT,
     FOREIGN KEY (updated_by) REFERENCES public.users(id)
+=======
+    PRIMARY KEY(space_id, accessories_id)
+>>>>>>> f55e346a893585edbd262f5a0f3e713b442582ac:db/-- Create the database schema for t.sql
 );
 
 CREATE TABLE public.plans (
@@ -149,22 +192,35 @@ CREATE TABLE public.plans (
     duration_months INT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+<<<<<<< HEAD:db/init.sql
     created_by INT,
     FOREIGN KEY (created_by) REFERENCES public.users(id),
     updated_by INT,
     FOREIGN KEY (updated_by) REFERENCES public.users(id)
 );
 
+=======
+    created_by INT REFERENCES public.users(id),
+    updated_by INT REFERENCES public.users(id)
+);
+
+
+>>>>>>> f55e346a893585edbd262f5a0f3e713b442582ac:db/-- Create the database schema for t.sql
 CREATE TABLE public.additional_services (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     price NUMERIC(12, 2) NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+<<<<<<< HEAD:db/init.sql
     created_by INT,
     FOREIGN KEY (created_by) REFERENCES public.users(id),
     updated_by INT,
     FOREIGN KEY (updated_by) REFERENCES public.users(id)
+=======
+    created_by INT REFERENCES public.users(id),
+    updated_by INT REFERENCES public.users(id)
+>>>>>>> f55e346a893585edbd262f5a0f3e713b442582ac:db/-- Create the database schema for t.sql
 );
 
 CREATE TABLE public.tickets (
@@ -177,10 +233,15 @@ CREATE TABLE public.tickets (
     end_date DATE NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+<<<<<<< HEAD:db/init.sql
     created_by INT,
     FOREIGN KEY (created_by) REFERENCES public.users(id),
     updated_by INT,
     FOREIGN KEY (updated_by) REFERENCES public.users(id)
+=======
+    created_by INT REFERENCES public.users(id),
+    updated_by INT REFERENCES public.users(id)
+>>>>>>> f55e346a893585edbd262f5a0f3e713b442582ac:db/-- Create the database schema for t.sql
 );
 
 CREATE TABLE public.reservations (
@@ -199,10 +260,15 @@ CREATE TABLE public.reservations (
     ticket_id INT REFERENCES public.tickets(id),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+<<<<<<< HEAD:db/init.sql
     created_by INT,
     FOREIGN KEY (created_by) REFERENCES public.users(id),
     updated_by INT,
     FOREIGN KEY (updated_by) REFERENCES public.users(id)
+=======
+    created_by INT REFERENCES public.users(id),
+    updated_by INT REFERENCES public.users(id)
+>>>>>>> f55e346a893585edbd262f5a0f3e713b442582ac:db/-- Create the database schema for t.sql
 );
 
 INSERT INTO public.roles (name) VALUES ('admin');
