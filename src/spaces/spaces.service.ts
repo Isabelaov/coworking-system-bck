@@ -33,11 +33,11 @@ export class SpacesService {
         return { error: err.getResponse()['message'], statusCode: 400 }
       }  
 
-      // if (!headquarter) {
-      //   const err = new NotFoundException(`Headquarter with ID ${createSpaceDto.headquarterId} not found`);
-      //   this.logger.error(`Failed to create space: ${err.message}`);
-      //   return { error: err.getResponse()['message'], statusCode: 400 };
-      // }
+      if (!headquarter) {
+        const err = new NotFoundException(`Headquarter with ID ${createSpaceDto.headquarterId} not found`);
+        this.logger.error(`Failed to create space: ${err.message}`);
+        return { error: err.getResponse()['message'], statusCode: 400 };
+      }
       
       const space = this.spacesRepository.create({...createSpaceDto, createdBy: user, headquarter})
 

@@ -33,8 +33,8 @@ export class Headquarter {
   upadtedAt: Date;
 
   @ManyToOne(() => User)
-  createdBy: User;
+  createdById: User;
 
   @ManyToOne(() => User)
-  updatedBy: User;
+  updatedById: User;
 }

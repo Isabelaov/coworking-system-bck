@@ -19,8 +19,8 @@ export class HeadquartersService {
 
     let headquarter = this.headquartersRepository.create({
       ...createHeadquartersDto,
-      createdBy: user,
-      updatedBy: user
+      createdById: user,
+      updatedById: user
     });
 
     headquarter = await this.headquartersRepository.save(headquarter);
