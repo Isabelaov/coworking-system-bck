@@ -1,4 +1,4 @@
-import { IsString, MaxLength, MinLength } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString, MaxLength, MinLength } from 'class-validator';
 import { User } from 'src/users/entities/user.entity';
 
 export class CreateHeadquartersDto {
@@ -12,5 +12,7 @@ export class CreateHeadquartersDto {
   @MinLength(5)
   address: string;
 
-  user: User;
+  @IsNotEmpty()
+  @IsNumber()
+  userId: number;
 }

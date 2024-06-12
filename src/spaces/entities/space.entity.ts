@@ -17,14 +17,20 @@ export class Space {
   @Column('varchar', { nullable: false, length: 100 })
   name: string;
 
+  // @Column('varchar', { nullable: false, length: 100 })
+  // type: string;
+
   @Column('int', { nullable: false })
   capacity: number;
 
   @Column('boolean', { default: true })
   isActive: boolean;
 
-  @ManyToOne(() => Headquarter)
-  headquarter: Headquarter['id'];
+  @Column('varchar', { nullable: false })
+  url: string;
+
+  @ManyToOne(() => Headquarter, { nullable: false})
+  headquarter: Headquarter;
 
   @CreateDateColumn({
     type: 'timestamptz',
@@ -39,9 +45,9 @@ export class Space {
   })
   upadtedAt: Date;
 
-  @ManyToOne(() => User)
-  createdBy: User['id'];
+  @ManyToOne(() => User, {nullable: false})
+  createdBy: User;
 
   @ManyToOne(() => User)
-  updatedBy: User['id'];
+  updatedBy: User;
 }

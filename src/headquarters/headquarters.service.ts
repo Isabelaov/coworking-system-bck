@@ -3,18 +3,26 @@ import { CreateHeadquartersDto } from './dto/create-headquarters.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Headquarter } from './entities/headquarters.entity';
 import { Repository } from 'typeorm';
+import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class HeadquartersService {
   @InjectRepository(Headquarter)
   private readonly headquartersRepository: Repository<Headquarter>;
+  @InjectRepository(User)
+  private usersRepository: Repository<User>;
 
   async create(createHeadquartersDto: CreateHeadquartersDto) {
+    const user = await this.usersRepository.findOne({
+      where: {id: createHeadquartersDto.userId}
+    })
+
     let headquarter = this.headquartersRepository.create({
       ...createHeadquartersDto,
-      createdBy: createHeadquartersDto.user,
-      updatedBy: createHeadquartersDto.user,
+      createdBy: user,
+      updatedBy: user
     });
+
     headquarter = await this.headquartersRepository.save(headquarter);
     return headquarter;
   }
